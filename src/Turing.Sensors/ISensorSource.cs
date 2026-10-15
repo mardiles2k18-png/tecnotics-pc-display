@@ -9,8 +9,30 @@ public sealed class SensorSnapshot
     public float? Get(string id) => Values.TryGetValue(id, out var v) ? v : null;
 
     /// <summary>Calcula valores derivados (totales y conversiones de unidades) a partir de los leídos.</summary>
+    /// <summary>Ocupación de la unidad donde está Windows (C: normalmente).</summary>
+    private void AddSystemDisk()
+    {
+        try
+        {
+            var root = Path.GetPathRoot(Environment.SystemDirectory);
+            if (string.IsNullOrEmpty(root))
+                return;
+            var d = new DriveInfo(root);
+            if (!d.IsReady || d.TotalSize <= 0)
+                return;
+            float used = d.TotalSize - d.TotalFreeSpace;
+            Values[SensorIds.DiskUsed] = used * 100f / d.TotalSize;
+            Values[SensorIds.DiskUsedGb] = used / 1e9f;
+            Values[SensorIds.DiskTotalGb] = d.TotalSize / 1e9f;
+        }
+        catch (IOException)
+        {
+        }
+    }
+
     public void AddDerived()
     {
+        AddSystemDisk();
         if (Get(SensorIds.RamUsed) is float used && Get(SensorIds.RamAvailable) is float avail)
             Values[SensorIds.RamTotal] = used + avail;
         if (Get(SensorIds.GpuMemUsed) is float vu)
@@ -58,7 +80,13 @@ public static class SensorIds
         CpuLoad, CpuTemp, CpuPower, CpuClock, CpuClockGhz,
         GpuLoad, GpuTemp, GpuPower, GpuMemUsed, GpuMemTotal, GpuMemUsedGb, GpuMemTotalGb,
         RamLoad, RamUsed, RamAvailable, RamTotal,
+        DiskUsed, DiskUsedGb, DiskTotalGb,
     ];
+
+    // Disco del sistema (la unidad de Windows), leído con DriveInfo.
+    public const string DiskUsed = "disk.used";          // % ocupado
+    public const string DiskUsedGb = "disk.used.gb";     // GB
+    public const string DiskTotalGb = "disk.total.gb";   // GB
 
     public const string CpuName = "cpu";
     public const string GpuName = "gpu";

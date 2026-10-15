@@ -21,7 +21,7 @@ En `text` los valores van entre llaves, con formato opcional: `{cpu.load:0}%`, `
 
 Valores disponibles: cpu.load, cpu.temp, cpu.power, cpu.clock, cpu.clock.ghz, gpu.load, gpu.temp,
 gpu.power, gpu.mem.used, gpu.mem.total, gpu.mem.used.gb, gpu.mem.total.gb, ram.load, ram.used,
-ram.available, ram.total. Nombres: name.cpu, name.gpu (completos) y model.cpu, model.gpu (cortos).
+ram.available, ram.total, disk.used (% ocupado del disco de Windows), disk.used.gb, disk.total.gb. Nombres: name.cpu, name.gpu (completos) y model.cpu, model.gpu (cortos).
 
 `colorRules` cambia el color según el valor, p. ej. temperatura verde, amarilla y roja:
 `[{"max": 60, "color": "#76D66F"}, {"max": 80, "color": "#FFC14D"}, {"color": "#FF5C5C"}]`
