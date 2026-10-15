@@ -41,6 +41,7 @@ para la fase 4 (importar temas originales). El software original no se incluye e
 - Fase 1: comunicación con la pantalla (revisión A, COM por USB). Hecho.
 - Fase 2: monitor de CPU, GPU y RAM, vertical y horizontal. Hecho.
 - Fase 3: temas en JSON, app de bandeja y arranque con Windows. Hecho.
-- Logo TECNOTICS en el .exe y la bandeja, ventana de configuración. Hecho (pendiente de probar en Windows).
+- Logo TECNOTICS en el .exe y la bandeja, ventana de configuración. Hecho.
+- Instalación del driver PawnIO desde la app: la primera vez ofrece descargarlo del sitio oficial (GitHub de namazso), comprueba la firma y lo instala con `-install -silent`. También en Herramientas y en la ventana de configuración. El driver no se incluye en el repositorio.
 - Fase 4: importar los temas originales. Pendiente.
 - Fase 5: editor visual de temas. Pendiente.

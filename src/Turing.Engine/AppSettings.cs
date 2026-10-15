@@ -17,6 +17,8 @@ public sealed class AppSettings
     public bool Encendida { get; set; } = true;
     /// <summary>True cuando ya se preguntó si arrancar con Windows.</summary>
     public bool ArranquePreguntado { get; set; }
+    /// <summary>True cuando ya se ofreció instalar el driver de sensores PawnIO.</summary>
+    public bool DriverPreguntado { get; set; }
 
     /// <summary>Solo para migrar el turing.json de la fase 2 ("vertical", "horizontal-invertida"...).</summary>
     public string? Orientacion { get; set; }

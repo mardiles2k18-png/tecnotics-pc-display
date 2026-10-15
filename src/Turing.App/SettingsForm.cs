@@ -12,6 +12,7 @@ internal sealed class SettingsForm : Form
     private readonly TrayContext _app;
     private readonly System.Windows.Forms.Timer _timer = new() { Interval = 1000 };
     private readonly Label _status = new() { AutoSize = true, Font = new Font("Segoe UI", 10f, FontStyle.Bold) };
+    private readonly LinkLabel _driver = new() { AutoSize = true };
     private readonly PictureBox _preview = new() { SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.Black, Dock = DockStyle.Fill };
     private readonly ComboBox _theme = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 220 };
     private readonly TrackBar _brightness = new() { Minimum = 5, Maximum = 100, TickFrequency = 10, SmallChange = 5, LargeChange = 10, Width = 180 };
@@ -67,6 +68,8 @@ internal sealed class SettingsForm : Form
         var titles = new FlowLayoutPanel { FlowDirection = FlowDirection.TopDown, AutoSize = true, Margin = new Padding(12, 10, 0, 0) };
         titles.Controls.Add(new Label { Text = "Turing Monitor", AutoSize = true, Font = new Font("Segoe UI", 16f, FontStyle.Bold) });
         titles.Controls.Add(_status);
+        titles.Controls.Add(_driver);
+        _driver.LinkClicked += (_, _) => _app.InstallSensorDriver(this);
         header.Controls.Add(logo);
         header.Controls.Add(titles);
         root.Controls.Add(header, 0, 0);
@@ -115,6 +118,7 @@ internal sealed class SettingsForm : Form
         tools.Controls.Add(Button("Lista de sensores", async (_, _) => await _app.SaveSensorList()));
         tools.Controls.Add(Button("Prueba de pantalla", async (_, _) => await _app.RunDiagnostics()));
         tools.Controls.Add(Button("Abrir registro", (_, _) => _app.OpenLog()));
+        tools.Controls.Add(Button("Driver de sensores", (_, _) => _app.InstallSensorDriver(this)));
         tools.Controls.Add(Button("Cerrar ventana", (_, _) => Close()));
         tools.Controls.Add(Button("Salir del programa", (_, _) => _app.Exit()));
         root.Controls.Add(tools, 0, 2);
@@ -171,6 +175,16 @@ internal sealed class SettingsForm : Form
             _invert.Checked = s.Invertida;
             _power.Checked = s.Encendida;
             _autostart.Checked = _app.IsAutostart();
+            if (SensorDriver.InstalledVersion() is { } v)
+            {
+                _driver.Text = $"Driver de sensores PawnIO {v} instalado";
+                _driver.LinkArea = new LinkArea(0, 0);
+            }
+            else
+            {
+                _driver.Text = "Falta el driver de sensores (temperatura y consumo de CPU). Instalar";
+                _driver.LinkArea = new LinkArea(_driver.Text.Length - 8, 8);
+            }
         }
         finally
         {

@@ -45,6 +45,7 @@ internal sealed class TrayContext : ApplicationContext
         _menu.Closed += (_, _) => _form?.LoadValues(); // por si se cambió algo desde el menú
         _tooltipTimer.Tick += (_, _) => UpdateTooltip();
         _tooltipTimer.Start();
+        OfferSensorDriver();
         _service.Start();
 
         // La primera vez, ofrecer el arranque automático.
@@ -86,6 +87,7 @@ internal sealed class TrayContext : ApplicationContext
         tools.DropDownItems.Add("Guardar lista de sensores", null, async (_, _) => await SaveSensorList());
         tools.DropDownItems.Add("Prueba de pantalla (diagnóstico)", null, async (_, _) => await RunDiagnostics());
         tools.DropDownItems.Add("Abrir registro", null, (_, _) => OpenLog());
+        tools.DropDownItems.Add("Instalar driver de sensores (PawnIO)", null, (_, _) => InstallSensorDriver(null));
         _menu.Items.Add(tools);
         _menu.Items.Add(new ToolStripSeparator());
         _menu.Items.Add("Salir", null, (_, _) => Exit());
@@ -110,6 +112,40 @@ internal sealed class TrayContext : ApplicationContext
         _invert.Checked = _settings.Invertida;
         _power.Checked = _settings.Encendida;
         _autostart.Checked = SafeIsAutostart();
+    }
+
+    /// <summary>
+    /// La primera vez, si falta el driver PawnIO, ofrece instalarlo. Va antes de arrancar el motor porque
+    /// LibreHardwareMonitor solo detecta el driver al abrir los sensores.
+    /// </summary>
+    private void OfferSensorDriver()
+    {
+        if (_settings.DriverPreguntado || SensorDriver.IsInstalled)
+            return;
+        _settings.DriverPreguntado = true;
+        _settings.Save();
+        if (MessageBox.Show(
+                "Para mostrar la temperatura, el consumo y la frecuencia de la CPU hace falta el driver gratuito PawnIO " +
+                "(de pawnio.eu, firmado digitalmente).\n\n¿Lo descargo e instalo ahora? Solo se hace una vez.",
+                "Turing Monitor", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            SensorDriver.InstallInteractive(null);
+    }
+
+    /// <summary>Instala el driver desde el menú o la ventana y reinicia el programa para que los sensores lo usen.</summary>
+    internal void InstallSensorDriver(IWin32Window? owner)
+    {
+        if (SensorDriver.InstalledVersion() is { } v)
+        {
+            MessageBox.Show(owner, $"El driver de sensores PawnIO {v} ya está instalado.", "Turing Monitor",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+        if (!SensorDriver.InstallInteractive(owner))
+            return;
+        MessageBox.Show(owner, "Driver instalado. Turing Monitor se va a reiniciar para leer los sensores nuevos.", "Turing Monitor",
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
+        Program.RestartRequested = true;
+        Exit();
     }
 
     /// <summary>Abre la ventana de configuración (o la trae al frente si ya está abierta).</summary>
