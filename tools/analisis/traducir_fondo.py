@@ -98,7 +98,10 @@ def main(folder, regions_file):
             h = reg['fill'].lstrip('#')
             flat = (int(h[4:6], 16), int(h[2:4], 16), int(h[0:2], 16))
         if flat is not None:
-            flats.append((m, flat))  # fondo liso: se rellena con su color
+            m = np.zeros_like(m)  # fondo liso: se rellena todo el rectángulo (no quedan bordes de letra)
+            x0, y0, x1, y1 = reg['r']
+            m[y0:y1, x0:x1] = 255
+            flats.append((m, flat))
         else:
             mask |= m              # fondo con dibujo: se reconstruye con inpainting
         colors.append(c[::-1])  # BGR -> RGB
