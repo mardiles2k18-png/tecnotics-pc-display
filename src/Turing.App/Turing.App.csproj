@@ -10,7 +10,15 @@
     <AssemblyName>TuringMonitor</AssemblyName>
     <RootNamespace>Turing.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\tecnotics.ico</ApplicationIcon>
+    <Company>TECNOTICS</Company>
+    <Product>Turing Monitor</Product>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\tecnotics.ico" />
+    <EmbeddedResource Include="Assets\logo.png" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Turing.Engine\Turing.Engine.csproj" />

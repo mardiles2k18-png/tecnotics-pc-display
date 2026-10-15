@@ -64,6 +64,13 @@ public sealed class Renderer : IDisposable
         return changed.Select(w => Extract(w.Bounds)).ToList();
     }
 
+    /// <summary>El fotograma actual en PNG (para la vista previa de la ventana de configuración).</summary>
+    public byte[] EncodePng()
+    {
+        using var data = _frame.Encode(SKEncodedImageFormat.Png, 100);
+        return data.ToArray();
+    }
+
     /// <summary>Guarda el fotograma actual como PNG (para depurar).</summary>
     public void SavePng(string path)
     {

@@ -43,6 +43,17 @@ public sealed class MonitorService : IDisposable
     /// <summary>Se dispara (desde el hilo del motor) cuando cambia <see cref="Status"/>.</summary>
     public event Action<string>? StatusChanged;
 
+    /// <summary>Puerto de la pantalla conectada (p. ej. "COM6").</summary>
+    public string? PortName { get; private set; }
+
+    /// <summary>Si es true, tras cada fotograma se guarda una copia en <see cref="PreviewPng"/> (la pide la ventana de configuración).</summary>
+    public volatile bool PreviewRequested;
+
+    /// <summary>Último fotograma en PNG; <see cref="PreviewVersion"/> sube cada vez que cambia.</summary>
+    public byte[]? PreviewPng { get; private set; }
+
+    public int PreviewVersion { get; private set; }
+
     /// <summary>El último fotograma dibujado (para depurar).</summary>
     public Renderer? CurrentRenderer { get; private set; }
 
@@ -191,8 +202,14 @@ public sealed class MonitorService : IDisposable
                 LastSnapshot = snap;
                 if (_settings.Encendida && renderer is not null)
                 {
-                    foreach (var r in renderer.Render(snap, DateTime.Now, full))
+                    var regions = renderer.Render(snap, DateTime.Now, full);
+                    foreach (var r in regions)
                         device.DrawRgb565(r.X, r.Y, r.Width, r.Height, r.Rgb565);
+                    if (PreviewRequested && (regions.Count > 0 || PreviewPng is null))
+                    {
+                        PreviewPng = renderer.EncodePng();
+                        PreviewVersion++;
+                    }
                     full = false;
                 }
 
@@ -237,6 +254,7 @@ public sealed class MonitorService : IDisposable
     private TuringRevA? OpenSerial()
     {
         var port = string.IsNullOrWhiteSpace(_settings.Puerto) ? SerialDisplay.FindTuringPort() : _settings.Puerto;
+        PortName = port;
         return port is null ? null : SerialDisplay.Open(port);
     }
 

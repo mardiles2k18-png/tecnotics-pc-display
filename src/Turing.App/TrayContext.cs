@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
 using Turing.Engine;
 using Turing.Sensors;
 using Turing.Themes;
@@ -21,6 +20,11 @@ internal sealed class TrayContext : ApplicationContext
     private readonly ToolStripMenuItem _invert = new("Girar 180°");
     private readonly ToolStripMenuItem _power = new("Pantalla encendida");
     private readonly ToolStripMenuItem _autostart = new("Arrancar con Windows");
+    private SettingsForm? _form;
+
+    internal AppSettings Settings => _settings;
+    internal ThemeStore Themes => _themes;
+    internal MonitorService Service => _service;
 
     public TrayContext()
     {
@@ -29,15 +33,16 @@ internal sealed class TrayContext : ApplicationContext
 
         _icon = new NotifyIcon
         {
-            Icon = CreateIcon(),
+            Icon = Branding.AppIcon(SystemInformation.SmallIconSize),
             Text = "Turing Monitor",
             Visible = true,
             ContextMenuStrip = _menu,
         };
-        _icon.DoubleClick += (_, _) => OpenFolder(AppSettings.ThemesFolder);
+        _icon.DoubleClick += (_, _) => ShowSettings();
 
         BuildMenu();
         _menu.Opening += (_, _) => RefreshMenu();
+        _menu.Closed += (_, _) => _form?.LoadValues(); // por si se cambió algo desde el menú
         _tooltipTimer.Tick += (_, _) => UpdateTooltip();
         _tooltipTimer.Start();
         _service.Start();
@@ -56,45 +61,31 @@ internal sealed class TrayContext : ApplicationContext
     private void BuildMenu()
     {
         _menu.Items.Add(_status);
+        var open = new ToolStripMenuItem("Configuración...", null, (_, _) => ShowSettings()) { Font = new Font(_menu.Font, FontStyle.Bold) };
+        _menu.Items.Add(open);
         _menu.Items.Add(new ToolStripSeparator());
         _menu.Items.Add(_themesMenu);
         foreach (var pct in new[] { 10, 25, 50, 75, 100 })
         {
             var item = new ToolStripMenuItem($"{pct}%") { Tag = pct };
-            item.Click += (_, _) =>
-            {
-                _settings.Brillo = pct;
-                _settings.Save();
-                _service.ApplyBrightness();
-            };
+            item.Click += (_, _) => SetBrightness(pct);
             _brightnessMenu.DropDownItems.Add(item);
         }
         _menu.Items.Add(_brightnessMenu);
-        _invert.Click += (_, _) =>
-        {
-            _settings.Invertida = !_settings.Invertida;
-            _settings.Save();
-            _service.Reload();
-        };
+        _invert.Click += (_, _) => SetInverted(!_settings.Invertida);
         _menu.Items.Add(_invert);
-        _power.Click += (_, _) =>
-        {
-            _settings.Encendida = !_settings.Encendida;
-            _settings.Save();
-            _service.ApplyPower();
-            _service.Reload();
-        };
+        _power.Click += (_, _) => SetPower(!_settings.Encendida);
         _menu.Items.Add(_power);
         _menu.Items.Add(new ToolStripSeparator());
         _autostart.Click += (_, _) => SetAutostart(!_autostart.Checked);
         _menu.Items.Add(_autostart);
 
         var tools = new ToolStripMenuItem("Herramientas");
-        tools.DropDownItems.Add("Abrir carpeta de temas", null, (_, _) => OpenFolder(AppSettings.ThemesFolder));
-        tools.DropDownItems.Add("Recargar temas", null, (_, _) => _service.Reload());
+        tools.DropDownItems.Add("Abrir carpeta de temas", null, (_, _) => OpenThemesFolder());
+        tools.DropDownItems.Add("Recargar temas", null, (_, _) => ReloadThemes());
         tools.DropDownItems.Add("Guardar lista de sensores", null, async (_, _) => await SaveSensorList());
         tools.DropDownItems.Add("Prueba de pantalla (diagnóstico)", null, async (_, _) => await RunDiagnostics());
-        tools.DropDownItems.Add("Abrir registro", null, (_, _) => OpenFile(Log.FilePath));
+        tools.DropDownItems.Add("Abrir registro", null, (_, _) => OpenLog());
         _menu.Items.Add(tools);
         _menu.Items.Add(new ToolStripSeparator());
         _menu.Items.Add("Salir", null, (_, _) => Exit());
@@ -108,12 +99,7 @@ internal sealed class TrayContext : ApplicationContext
         foreach (var name in _themes.List())
         {
             var item = new ToolStripMenuItem(name) { Checked = name == _settings.Tema };
-            item.Click += (_, _) =>
-            {
-                _settings.Tema = name;
-                _settings.Save();
-                _service.Reload();
-            };
+            item.Click += (_, _) => SetTheme(name);
             _themesMenu.DropDownItems.Add(item);
         }
         if (_themesMenu.DropDownItems.Count == 0)
@@ -125,6 +111,61 @@ internal sealed class TrayContext : ApplicationContext
         _power.Checked = _settings.Encendida;
         _autostart.Checked = SafeIsAutostart();
     }
+
+    /// <summary>Abre la ventana de configuración (o la trae al frente si ya está abierta).</summary>
+    private void ShowSettings()
+    {
+        if (_form is null || _form.IsDisposed)
+        {
+            _form = new SettingsForm(this);
+            _form.FormClosed += (_, _) => _form = null;
+            _form.Show();
+        }
+        else
+        {
+            _form.LoadValues();
+            if (_form.WindowState == FormWindowState.Minimized)
+                _form.WindowState = FormWindowState.Normal;
+        }
+        _form.Activate();
+    }
+
+    internal void SetTheme(string name)
+    {
+        _settings.Tema = name;
+        _settings.Save();
+        _service.Reload();
+    }
+
+    internal void SetBrightness(int percent)
+    {
+        _settings.Brillo = percent;
+        _settings.Save();
+        _service.ApplyBrightness();
+    }
+
+    internal void SetInverted(bool inverted)
+    {
+        _settings.Invertida = inverted;
+        _settings.Save();
+        _service.Reload();
+    }
+
+    internal void SetPower(bool on)
+    {
+        _settings.Encendida = on;
+        _settings.Save();
+        _service.ApplyPower();
+        _service.Reload();
+    }
+
+    internal void OpenThemesFolder() => OpenFolder(AppSettings.ThemesFolder);
+
+    internal void ReloadThemes() => _service.Reload();
+
+    internal void OpenLog() => OpenFile(Log.FilePath);
+
+    internal bool IsAutostart() => SafeIsAutostart();
 
     private void RefreshStatus() => _status.Text = $"Pantalla: {_service.Status}";
 
@@ -139,7 +180,7 @@ internal sealed class TrayContext : ApplicationContext
 
     private static string V(SensorSnapshot s, string id, string unit) => s.Get(id) is float v ? $"{v:0}{unit}" : "--";
 
-    private void SetAutostart(bool enable)
+    internal void SetAutostart(bool enable)
     {
         try
         {
@@ -168,7 +209,7 @@ internal sealed class TrayContext : ApplicationContext
         }
     }
 
-    private async Task SaveSensorList()
+    internal async Task SaveSensorList()
     {
         var path = Path.Combine(AppSettings.BaseFolder, "sensores.txt");
         try
@@ -187,7 +228,7 @@ internal sealed class TrayContext : ApplicationContext
         }
     }
 
-    private async Task RunDiagnostics()
+    internal async Task RunDiagnostics()
     {
         if (!_service.Connected)
         {
@@ -220,31 +261,13 @@ internal sealed class TrayContext : ApplicationContext
             Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
     }
 
-    private void Exit()
+    internal void Exit()
     {
+        _form?.Close();
         _tooltipTimer.Stop();
         _icon.Visible = false;
         _service.Dispose();
         ExitThread();
-    }
-
-    /// <summary>Icono dibujado en código: un rectángulo azul con una barra, como una pantallita.</summary>
-    private static Icon CreateIcon()
-    {
-        using var bmp = new Bitmap(32, 32);
-        using (var g = Graphics.FromImage(bmp))
-        {
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-            using var body = new SolidBrush(Color.FromArgb(0x18, 0x23, 0x3A));
-            using var edge = new Pen(Color.FromArgb(0x3D, 0xA9, 0xFC), 2);
-            using var bar = new SolidBrush(Color.FromArgb(0x76, 0xD6, 0x6F));
-            using var bar2 = new SolidBrush(Color.FromArgb(0x3D, 0xA9, 0xFC));
-            g.FillRectangle(body, 3, 5, 26, 22);
-            g.DrawRectangle(edge, 3, 5, 26, 22);
-            g.FillRectangle(bar2, 8, 11, 16, 4);
-            g.FillRectangle(bar, 8, 18, 10, 4);
-        }
-        return Icon.FromHandle(bmp.GetHicon());
     }
 
     protected override void Dispose(bool disposing)

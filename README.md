@@ -10,8 +10,9 @@ Solución .NET 10 para Windows. Arquitectura: ver el documento "Arquitectura de 
 | `src/Turing.Render` | Dibuja el tema con SkiaSharp y devuelve solo las zonas que cambiaron. Incluye la fuente Inter (OFL) |
 | `src/Turing.Themes` | Formato de tema en JSON (`theme.json`), cargador y temas incluidos (`Builtin/`, generados con `tools/generar_temas_basicos.py`) |
 | `src/Turing.Engine` | Motor: mantiene la pantalla, lee sensores, dibuja el tema; ajustes (`turing.json`), registro (`turing.log`), arranque con Windows y diagnóstico |
-| `src/Turing.App` | App de bandeja `TuringMonitor.exe` (WinForms): tema, brillo, giro, encender/apagar, arranque con Windows, herramientas |
+| `src/Turing.App` | App de bandeja `TuringMonitor.exe` (WinForms) con el logo de TECNOTICS (`Assets/`) y ventana de configuración: vista previa de la pantalla, sensores en vivo, tema, brillo, giro, encender/apagar, arranque con Windows, herramientas |
 | `src/Turing.Monitor` | Consola para desarrollo con el mismo motor: `--simular`, `--tema`, `--png`, `--diagnostico`, `--sensores` |
+| `tools/generar_icono.py` | Crea `Assets/tecnotics.ico` (16 a 256 px) a partir del logo |
 | `tools/simulador.py` | Decodifica lo que se enviaría a la pantalla y lo guarda como PNG (para probar sin el dispositivo) |
 
 ## Compilar
@@ -40,5 +41,6 @@ para la fase 4 (importar temas originales). El software original no se incluye e
 - Fase 1: comunicación con la pantalla (revisión A, COM por USB). Hecho.
 - Fase 2: monitor de CPU, GPU y RAM, vertical y horizontal. Hecho.
 - Fase 3: temas en JSON, app de bandeja y arranque con Windows. Hecho.
+- Logo TECNOTICS en el .exe y la bandeja, ventana de configuración. Hecho (pendiente de probar en Windows).
 - Fase 4: importar los temas originales. Pendiente.
 - Fase 5: editor visual de temas. Pendiente.
