@@ -14,14 +14,17 @@ y, si quieres, sus imágenes. Copia la carpeta de un tema existente, cámbiale e
 | label | Texto fijo | text, size, color, align (left/center/right), bold |
 | image | Imagen fija | image |
 | text | Texto con valores | text, size, color, align, bold, colorRules |
-| bar | Barra de un valor | sensor, max, color, backColor |
+| bar | Barra de un valor | sensor, max, color, backColor, rounded (false = rectas), frontImage, backImage |
+| arc | Anillo de un valor (x, y, w, h = el círculo) | sensor, max, color, backColor, thickness, start (grados) |
 
 En `text` los valores van entre llaves, con formato opcional: `{cpu.load:0}%`, `{ram.used:0.0} GB`,
 `{time:HH:mm}`, `{date:dd/MM}`, `{model.gpu}`.
 
 Valores disponibles: cpu.load, cpu.temp, cpu.power, cpu.clock, cpu.clock.ghz, gpu.load, gpu.temp,
 gpu.power, gpu.mem.used, gpu.mem.total, gpu.mem.used.gb, gpu.mem.total.gb, ram.load, ram.used,
-ram.available, ram.total, disk.used (% ocupado del disco de Windows), disk.used.gb, disk.total.gb. Nombres: name.cpu, name.gpu (completos) y model.cpu, model.gpu (cortos).
+ram.available, ram.total, disk.used (% ocupado del disco de Windows), disk.used.gb, disk.total.gb, disk.temp,
+gpu.mem.load (%), ram.used.mb, ram.total.mb, cpu.fan, gpu.fan (RPM), net.up, net.down (MB/s), net.up.kb,
+net.down.kb (KB/s), volume (%). Nombres: name.cpu, name.gpu (completos) y model.cpu, model.gpu (cortos).
 
 `colorRules` cambia el color según el valor, p. ej. temperatura verde, amarilla y roja:
 `[{"max": 60, "color": "#76D66F"}, {"max": 80, "color": "#FFC14D"}, {"color": "#FF5C5C"}]`

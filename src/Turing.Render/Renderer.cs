@@ -51,10 +51,14 @@ public sealed class Renderer : IDisposable
                 _lastKeys[w] = key;
                 changed.Add(w);
 
+                // Se repinta el fondo de la zona y todos los elementos que la tocan, en orden,
+                // para que un elemento que se solapa con otro no lo borre.
                 canvas.Save();
                 canvas.ClipRect(w.Bounds);
                 canvas.DrawBitmap(_background, 0, 0); // recortado por el clip
-                w.Draw(canvas, s, now);
+                foreach (var o in _widgets)
+                    if (o == w || SKRectI.Intersect(o.Bounds, w.Bounds) is { IsEmpty: false })
+                        o.Draw(canvas, s, now);
                 canvas.Restore();
             }
         }

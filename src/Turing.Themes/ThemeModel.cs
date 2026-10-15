@@ -62,7 +62,8 @@ public sealed class ThemeBackground
 /// <item>"label": texto fijo (text, size, color, align, bold).</item>
 /// <item>"image": imagen fija (image).</item>
 /// <item>"text": texto con valores, p. ej. "{cpu.load:0}%" o "{time:HH:mm}" (además colorRules).</item>
-/// <item>"bar": barra de un sensor (sensor, max, color, backColor).</item>
+/// <item>"bar": barra de un sensor (sensor, max, color, backColor, rounded, frontImage, backImage).</item>
+/// <item>"arc": anillo de un sensor; x, y, w, h es el círculo (sensor, max, color, backColor, thickness, start).</item>
 /// </list>
 /// </summary>
 public sealed class ThemeElement
@@ -88,6 +89,17 @@ public sealed class ThemeElement
     public float Radius { get; set; }
 
     public string? Image { get; set; }
+
+    /// <summary>Barras: esquinas redondeadas (por defecto) o rectas.</summary>
+    public bool Rounded { get; set; } = true;
+    /// <summary>Barras: imagen para la parte llena / el fondo (se estira), en lugar de color.</summary>
+    public string? FrontImage { get; set; }
+    public string? BackImage { get; set; }
+
+    /// <summary>Arcos: grosor de la línea en píxeles.</summary>
+    public float Thickness { get; set; } = 6;
+    /// <summary>Arcos: ángulo de inicio en grados (0 = derecha, sentido horario). El 100 % es la vuelta completa.</summary>
+    public float Start { get; set; } = -90;
 
     /// <summary>Colores según el valor: el primero cuyo "max" sea mayor que el valor (o sin max) gana.</summary>
     public List<ColorRule>? ColorRules { get; set; }

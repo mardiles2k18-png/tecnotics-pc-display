@@ -10,6 +10,7 @@ namespace Turing.Sensors;
 public sealed class HardwareSensorSource : ISensorSource
 {
     private readonly Computer _computer;
+    private readonly SystemCounters _counters = new();
 
     public HardwareSensorSource()
     {
@@ -18,6 +19,8 @@ public sealed class HardwareSensorSource : ISensorSource
             IsCpuEnabled = true,
             IsGpuEnabled = true,
             IsMemoryEnabled = true,
+            IsMotherboardEnabled = true, // ventiladores de la placa (CPU)
+            IsStorageEnabled = true,     // temperatura de discos
         };
         _computer.Open();
     }
@@ -79,7 +82,18 @@ public sealed class HardwareSensorSource : ISensorSource
             Put(s, SensorIds.GpuPower, Find(sensors, SensorType.Power, "GPU Package", "GPU Power", "GPU Core"));
             Put(s, SensorIds.GpuMemUsed, Find(sensors, SensorType.SmallData, "GPU Memory Used", "D3D Dedicated Memory Used"));
             Put(s, SensorIds.GpuMemTotal, Find(sensors, SensorType.SmallData, "GPU Memory Total"));
+            Put(s, SensorIds.GpuFan, Find(sensors, SensorType.Fan, "GPU Fan", "GPU Fan 1", "Fan #1")
+                                     ?? sensors.FirstOrDefault(x => x.SensorType == SensorType.Fan && x.Value is > 0)?.Value);
         }
+
+        // Ventilador de CPU: en el chip de la placa (SuperIO); el que se llame "CPU" o, si no, el primero que gire.
+        var boardFans = AllHardware().Where(h => h.HardwareType == HardwareType.SuperIO)
+            .SelectMany(h => h.Sensors).Where(x => x.SensorType == SensorType.Fan && x.Value is > 0).ToList();
+        Put(s, SensorIds.CpuFan, (boardFans.FirstOrDefault(x => x.Name.Contains("CPU", StringComparison.OrdinalIgnoreCase)) ?? boardFans.FirstOrDefault())?.Value);
+
+        var disk = AllHardware().Where(h => h.HardwareType == HardwareType.Storage)
+            .Select(h => h.Sensors.FirstOrDefault(x => x.SensorType == SensorType.Temperature && x.Value is > 0)).FirstOrDefault(x => x is not null);
+        Put(s, SensorIds.DiskTemp, disk?.Value);
 
         // LibreHardwareMonitor tiene dos "Memory": la física y la virtual. Queremos la física.
         var mem = _computer.Hardware.FirstOrDefault(h => h.HardwareType == HardwareType.Memory &&
@@ -91,6 +105,7 @@ public sealed class HardwareSensorSource : ISensorSource
             Put(s, SensorIds.RamAvailable, Find(mem.Sensors, SensorType.Data, "Memory Available"));
         }
 
+        _counters.AddTo(s);
         s.AddDerived();
         return s;
     }

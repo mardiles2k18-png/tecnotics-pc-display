@@ -25,6 +25,14 @@ public sealed class FakeSensorSource : ISensorSource
         s.Values[SensorIds.GpuMemUsed] = 1740;
         s.Values[SensorIds.GpuMemTotal] = 16311;
         s.Names[SensorIds.GpuName] = "NVIDIA GeForce RTX 5060 Ti";
+        s.Values[SensorIds.DiskTemp] = 38;
+        s.Values[SensorIds.CpuFan] = 1250;
+        s.Values[SensorIds.GpuFan] = 1480;
+        s.Values[SensorIds.NetUp] = 0.4f;
+        s.Values[SensorIds.NetDown] = (float)(3.2 + 2 * Math.Sin(t / 2));
+        s.Values[SensorIds.NetUpKb] = 410;
+        s.Values[SensorIds.NetDownKb] = 3270;
+        s.Values[SensorIds.Volume] = 35;
         s.AddDerived();
         return s;
     }

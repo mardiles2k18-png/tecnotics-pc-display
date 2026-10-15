@@ -39,6 +39,12 @@ public sealed class SensorSnapshot
             Values[SensorIds.GpuMemUsedGb] = vu / 1024;
         if (Get(SensorIds.GpuMemTotal) is float vt)
             Values[SensorIds.GpuMemTotalGb] = vt / 1024;
+        if (Get(SensorIds.GpuMemUsed) is float mu && Get(SensorIds.GpuMemTotal) is float mt && mt > 0)
+            Values[SensorIds.GpuMemLoad] = mu * 100 / mt;
+        if (Get(SensorIds.RamUsed) is float ru)
+            Values[SensorIds.RamUsedMb] = ru * 1024;
+        if (Get(SensorIds.RamTotal) is float rt)
+            Values[SensorIds.RamTotalMb] = rt * 1024;
         if (Get(SensorIds.CpuClock) is float mhz)
             Values[SensorIds.CpuClockGhz] = mhz / 1000;
     }
@@ -80,8 +86,22 @@ public static class SensorIds
         CpuLoad, CpuTemp, CpuPower, CpuClock, CpuClockGhz,
         GpuLoad, GpuTemp, GpuPower, GpuMemUsed, GpuMemTotal, GpuMemUsedGb, GpuMemTotalGb,
         RamLoad, RamUsed, RamAvailable, RamTotal,
-        DiskUsed, DiskUsedGb, DiskTotalGb,
+        DiskUsed, DiskUsedGb, DiskTotalGb, DiskTemp,
+        GpuMemLoad, RamUsedMb, RamTotalMb, CpuFan, GpuFan,
+        NetUp, NetDown, NetUpKb, NetDownKb, Volume,
     ];
+
+    public const string DiskTemp = "disk.temp";          // °C (primer disco con sensor)
+    public const string GpuMemLoad = "gpu.mem.load";     // % de memoria de vídeo usada
+    public const string RamUsedMb = "ram.used.mb";       // MB
+    public const string RamTotalMb = "ram.total.mb";     // MB
+    public const string CpuFan = "cpu.fan";              // RPM
+    public const string GpuFan = "gpu.fan";              // RPM
+    public const string NetUp = "net.up";                // MB/s subida (todas las interfaces)
+    public const string NetDown = "net.down";            // MB/s bajada
+    public const string NetUpKb = "net.up.kb";           // KB/s
+    public const string NetDownKb = "net.down.kb";       // KB/s
+    public const string Volume = "volume";               // % volumen general de Windows (0 si está silenciado)
 
     // Disco del sistema (la unidad de Windows), leído con DriveInfo.
     public const string DiskUsed = "disk.used";          // % ocupado

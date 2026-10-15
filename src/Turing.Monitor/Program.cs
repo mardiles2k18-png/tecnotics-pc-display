@@ -59,14 +59,16 @@ using var service = new MonitorService(settings, store,
     () => simulateFile is null ? new HardwareSensorSource() : new FakeSensorSource(),
     OpenDevice);
 service.StatusChanged += s => Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {s}");
+service.PreviewRequested = pngFile is not null;
 service.Start();
 
 using var done = new ManualResetEventSlim();
 Console.CancelKeyPress += (_, e) => { e.Cancel = true; done.Set(); };
 done.Wait(seconds is int n ? TimeSpan.FromSeconds(n) : Timeout.InfiniteTimeSpan);
 
-if (pngFile is not null)
-    service.CurrentRenderer?.SavePng(pngFile);
+// La copia del fotograma se hace en el hilo del motor, así nunca sale a medio dibujar.
+if (pngFile is not null && service.PreviewPng is { } png)
+    File.WriteAllBytes(pngFile, png);
 return 0;
 
 static string? TakeOption(List<string> list, string name)

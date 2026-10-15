@@ -31,7 +31,11 @@ public static partial class ThemeLoader
                     break;
                 case "bar":
                     widgets.Add(new BarWidget(bounds, e.Sensor ?? "", e.Max <= 0 ? 100 : e.Max, ParseColor(e.Color),
-                        ParseColor(e.BackColor ?? "#26334F")));
+                        ParseColor(e.BackColor ?? "#26334F"), e.Rounded, LoadBitmap(theme, e.FrontImage), LoadBitmap(theme, e.BackImage)));
+                    break;
+                case "arc":
+                    widgets.Add(new ArcWidget(new SKRect(e.X, e.Y, e.X + e.W, e.Y + e.H), e.Sensor ?? "", e.Max <= 0 ? 100 : e.Max,
+                        ParseColor(e.Color), e.BackColor is null ? null : ParseColor(e.BackColor), e.Thickness, e.Start));
                     break;
             }
         }
@@ -84,6 +88,14 @@ public static partial class ThemeLoader
                     break;
             }
         }
+    }
+
+    private static SKBitmap? LoadBitmap(Theme theme, string? file)
+    {
+        if (file is null)
+            return null;
+        var path = theme.Folder is null ? file : Path.Combine(theme.Folder, file);
+        return File.Exists(path) ? SKBitmap.Decode(path) : null;
     }
 
     private static void DrawImage(SKCanvas c, Theme theme, string file, SKRect dest)

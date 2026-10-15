@@ -43,5 +43,5 @@ para la fase 4 (importar temas originales). El software original no se incluye e
 - Fase 3: temas en JSON, app de bandeja y arranque con Windows. Hecho.
 - Logo TECNOTICS en el .exe y la bandeja, ventana de configuración. Hecho.
 - Instalación del driver PawnIO desde la app: la primera vez ofrece descargarlo del sitio oficial (GitHub de namazso), comprueba la firma y lo instala con `-install -silent`. También en Herramientas y en la ventana de configuración. El driver no se incluye en el repositorio.
-- Fase 4: importar los temas originales. Pendiente.
+- Fase 4: importar los temas originales. En curso: `tools/analisis/convertir_temas.py` convierte los 35 temas (textos, barras y arcos) y `traducir_fondo.py` reescribe en español los textos dibujados en las imágenes. Los temas convertidos no van al repositorio (imágenes con derechos de autor).
 - Fase 5: editor visual de temas. Pendiente.
