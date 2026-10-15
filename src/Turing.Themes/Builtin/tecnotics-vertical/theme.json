@@ -1,0 +1,325 @@
+{
+  "formatVersion": 1,
+  "name": "TECNOTICS vertical",
+  "orientation": "portrait",
+  "background": {
+    "color": "#04070C",
+    "image": "fondo.png"
+  },
+  "elements": [
+    {
+      "type": "text",
+      "x": 228,
+      "y": 8,
+      "w": 80,
+      "h": 28,
+      "text": "{time:HH:mm}",
+      "size": 22,
+      "color": "#FFFFFF",
+      "align": "right",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 208,
+      "y": 36,
+      "w": 100,
+      "h": 16,
+      "text": "{date:dd/MM/yyyy}",
+      "size": 10,
+      "color": "#7F98A6",
+      "align": "right",
+      "bold": true
+    },
+    {
+      "type": "arc",
+      "x": 28,
+      "y": 92,
+      "w": 108,
+      "h": 108,
+      "sensor": "cpu.load",
+      "max": 100,
+      "thickness": 10,
+      "start": -90,
+      "color": "#6EC6D9"
+    },
+    {
+      "type": "label",
+      "x": 42,
+      "y": 112,
+      "w": 80,
+      "h": 16,
+      "text": "CPU",
+      "size": 13,
+      "color": "#6EC6D9",
+      "align": "center",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 34,
+      "y": 128,
+      "w": 96,
+      "h": 38,
+      "text": "{cpu.load:0}%",
+      "size": 30,
+      "color": "#FFFFFF",
+      "align": "center",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 42,
+      "y": 164,
+      "w": 80,
+      "h": 18,
+      "text": "{cpu.temp:0}°C",
+      "size": 14,
+      "color": "#6EC6D9",
+      "align": "center",
+      "bold": true,
+      "colorRules": [
+        {
+          "max": 60,
+          "color": "#6EC6D9"
+        },
+        {
+          "max": 80,
+          "color": "#FFC14D"
+        },
+        {
+          "color": "#FF5C5C"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "x": 14,
+      "y": 218,
+      "w": 136,
+      "h": 16,
+      "text": "{cpu.clock.ghz:0.0} GHz · {cpu.power:0} W",
+      "size": 11,
+      "color": "#7F98A6",
+      "align": "center",
+      "bold": false
+    },
+    {
+      "type": "arc",
+      "x": 184,
+      "y": 92,
+      "w": 108,
+      "h": 108,
+      "sensor": "gpu.load",
+      "max": 100,
+      "thickness": 10,
+      "start": -90,
+      "color": "#F28C1E"
+    },
+    {
+      "type": "label",
+      "x": 198,
+      "y": 112,
+      "w": 80,
+      "h": 16,
+      "text": "GPU",
+      "size": 13,
+      "color": "#F28C1E",
+      "align": "center",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 190,
+      "y": 128,
+      "w": 96,
+      "h": 38,
+      "text": "{gpu.load:0}%",
+      "size": 30,
+      "color": "#FFFFFF",
+      "align": "center",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 198,
+      "y": 164,
+      "w": 80,
+      "h": 18,
+      "text": "{gpu.temp:0}°C",
+      "size": 14,
+      "color": "#6EC6D9",
+      "align": "center",
+      "bold": true,
+      "colorRules": [
+        {
+          "max": 60,
+          "color": "#6EC6D9"
+        },
+        {
+          "max": 80,
+          "color": "#FFC14D"
+        },
+        {
+          "color": "#FF5C5C"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "x": 170,
+      "y": 218,
+      "w": 136,
+      "h": 16,
+      "text": "{gpu.mem.used.gb:0.0} GB · {gpu.power:0} W",
+      "size": 11,
+      "color": "#7F98A6",
+      "align": "center",
+      "bold": false
+    },
+    {
+      "type": "label",
+      "x": 22,
+      "y": 248,
+      "w": 70,
+      "h": 18,
+      "text": "RAM",
+      "size": 13,
+      "color": "#6EC6D9",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 80,
+      "y": 248,
+      "w": 218,
+      "h": 18,
+      "text": "{ram.used:0.0}/{ram.total:0} GB · {ram.load:0}%",
+      "size": 12,
+      "color": "#FFFFFF",
+      "align": "right",
+      "bold": true
+    },
+    {
+      "type": "bar",
+      "x": 22,
+      "y": 274,
+      "w": 276,
+      "h": 8,
+      "sensor": "ram.load",
+      "max": 100,
+      "color": "#6EC6D9",
+      "backColor": "#132A35",
+      "rounded": true
+    },
+    {
+      "type": "label",
+      "x": 22,
+      "y": 310,
+      "w": 70,
+      "h": 18,
+      "text": "DISCO",
+      "size": 13,
+      "color": "#F28C1E",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 80,
+      "y": 310,
+      "w": 218,
+      "h": 18,
+      "text": "{disk.used.gb:0}/{disk.total.gb:0} GB · {disk.used:0}%",
+      "size": 12,
+      "color": "#FFFFFF",
+      "align": "right",
+      "bold": true
+    },
+    {
+      "type": "bar",
+      "x": 22,
+      "y": 336,
+      "w": 276,
+      "h": 8,
+      "sensor": "disk.used",
+      "max": 100,
+      "color": "#F28C1E",
+      "backColor": "#132A35",
+      "rounded": true
+    },
+    {
+      "type": "label",
+      "x": 22,
+      "y": 372,
+      "w": 60,
+      "h": 18,
+      "text": "RED",
+      "size": 13,
+      "color": "#F28C1E",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "label",
+      "x": 22,
+      "y": 394,
+      "w": 134,
+      "h": 14,
+      "text": "↑ SUBIDA",
+      "size": 10,
+      "color": "#7F98A6",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 22,
+      "y": 408,
+      "w": 134,
+      "h": 24,
+      "text": "{net.up:0.00} MB/s",
+      "size": 17,
+      "color": "#FFFFFF",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "label",
+      "x": 164,
+      "y": 394,
+      "w": 134,
+      "h": 14,
+      "text": "↓ BAJADA",
+      "size": 10,
+      "color": "#7F98A6",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 164,
+      "y": 408,
+      "w": 134,
+      "h": 24,
+      "text": "{net.down:0.00} MB/s",
+      "size": 17,
+      "color": "#FFFFFF",
+      "align": "left",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 10,
+      "y": 452,
+      "w": 300,
+      "h": 16,
+      "text": "{model.cpu}",
+      "size": 11,
+      "color": "#7F98A6",
+      "align": "center",
+      "bold": false
+    }
+  ]
+}

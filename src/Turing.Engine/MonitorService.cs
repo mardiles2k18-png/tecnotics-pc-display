@@ -225,11 +225,11 @@ public sealed class MonitorService : IDisposable
         }
     }
 
-    /// <summary>Carga el tema activo; si no existe o está mal, el primero disponible.</summary>
+    /// <summary>Carga el tema activo; la primera vez el de TECNOTICS; si no existe o está mal, el primero disponible.</summary>
     private Theme LoadTheme()
     {
         var names = _themes.List();
-        foreach (var name in new[] { _settings.Tema }.Concat(names))
+        foreach (var name in new[] { _settings.Tema, ThemeStore.DefaultTheme }.Concat(names))
         {
             if (name is null || !names.Contains(name))
                 continue;

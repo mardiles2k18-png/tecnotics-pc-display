@@ -12,6 +12,8 @@ public sealed class FakeSensorSource : ISensorSource
         var s = new SensorSnapshot();
         s.Values[SensorIds.CpuLoad] = (float)(35 + 30 * Math.Sin(t / 3));
         s.Values[SensorIds.DiskUsed] = 62;
+        s.Values[SensorIds.DiskUsedGb] = 580;
+        s.Values[SensorIds.DiskTotalGb] = 931;
         s.Values[SensorIds.CpuTemp] = (float)(55 + 10 * Math.Sin(t / 5));
         s.Values[SensorIds.GpuLoad] = (float)(60 + 35 * Math.Sin(t / 4));
         s.Values[SensorIds.GpuTemp] = (float)(50 + 12 * Math.Sin(t / 6));
