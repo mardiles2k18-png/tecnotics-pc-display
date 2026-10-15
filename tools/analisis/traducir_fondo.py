@@ -10,6 +10,8 @@ regiones.json es una lista de zonas con texto horneado:
 - size: tamaño de letra (por defecto, el que llena la altura); color: "#RRGGBB" (por defecto, el del texto original);
 - fill: "#RRGGBB" para borrar rellenando con ese color en vez de reconstruir el fondo;
 - maxw: ancho máximo si el texto nuevo es más largo que el original (por defecto, el del rectángulo + 40 %).
+También puede ser {"regiones": [...], "etiquetas": {"TEXTO ACTUAL": "texto nuevo"}} para cambiar además
+etiquetas del theme.json (p. ej. acortarlas si no caben).
 Guarda el fondo sin tocar como fondo-original.png la primera vez, para poder repetir el proceso.
 """
 import sys, os, json, shutil
@@ -77,7 +79,16 @@ def main(folder, regions_file):
     src = os.path.join(folder, 'fondo-original.png')
     if not os.path.exists(src):
         shutil.copy(os.path.join(folder, 'fondo.png'), src)
-    regions = json.load(open(regions_file, encoding='utf-8'))
+    spec = json.load(open(regions_file, encoding='utf-8'))
+    regions = spec.get('regiones', []) if isinstance(spec, dict) else spec
+    labels = spec.get('etiquetas', {}) if isinstance(spec, dict) else {}
+    if labels:
+        tp = os.path.join(folder, 'theme.json')
+        theme = json.load(open(tp, encoding='utf-8'))
+        for e in theme['elements']:
+            if e.get('type') in ('label', 'text') and e.get('text') in labels:
+                e['text'] = labels[e['text']]
+        json.dump(theme, open(tp, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
     img = cv2.cvtColor(np.array(Image.open(src).convert('RGB')), cv2.COLOR_RGB2BGR)
     mask = np.zeros(img.shape[:2], np.uint8)
     colors, boxes, flats = [], [], []
