@@ -1,0 +1,275 @@
+{
+  "formatVersion": 1,
+  "name": "Básico vertical",
+  "orientation": "portrait",
+  "background": {
+    "color": "#0B1220",
+    "gradientTo": "#101A2E"
+  },
+  "elements": [
+    {
+      "type": "text",
+      "x": 0,
+      "y": 4,
+      "w": 320,
+      "h": 30,
+      "text": "{time:HH:mm}",
+      "size": 22,
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "type": "panel",
+      "x": 10,
+      "y": 40,
+      "w": 300,
+      "h": 175,
+      "color": "#18233A",
+      "borderColor": "#2A3A5C",
+      "radius": 10
+    },
+    {
+      "type": "label",
+      "x": 24,
+      "y": 52,
+      "w": 60,
+      "h": 22,
+      "text": "CPU",
+      "size": 18,
+      "bold": true,
+      "color": "#3DA9FC"
+    },
+    {
+      "type": "label",
+      "x": 24,
+      "y": 84,
+      "w": 80,
+      "h": 16,
+      "text": "Uso",
+      "size": 12,
+      "color": "#8A9BB8"
+    },
+    {
+      "type": "label",
+      "x": 196,
+      "y": 84,
+      "w": 100,
+      "h": 16,
+      "text": "Temperatura",
+      "size": 12,
+      "color": "#8A9BB8",
+      "align": "right"
+    },
+    {
+      "type": "text",
+      "x": 72,
+      "y": 50,
+      "w": 228,
+      "h": 24,
+      "text": "{model.cpu}",
+      "size": 13,
+      "color": "#8A9BB8"
+    },
+    {
+      "type": "text",
+      "x": 20,
+      "y": 100,
+      "w": 140,
+      "h": 50,
+      "text": "{cpu.load:0}%",
+      "size": 40,
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 160,
+      "y": 100,
+      "w": 140,
+      "h": 50,
+      "text": "{cpu.temp:0}°C",
+      "size": 40,
+      "bold": true,
+      "align": "right",
+      "colorRules": [
+        {
+          "max": 60,
+          "color": "#76D66F"
+        },
+        {
+          "max": 80,
+          "color": "#FFC14D"
+        },
+        {
+          "color": "#FF5C5C"
+        }
+      ]
+    },
+    {
+      "type": "bar",
+      "x": 24,
+      "y": 168,
+      "w": 272,
+      "h": 16,
+      "sensor": "cpu.load",
+      "color": "#3DA9FC",
+      "backColor": "#26334F"
+    },
+    {
+      "type": "text",
+      "x": 20,
+      "y": 190,
+      "w": 280,
+      "h": 22,
+      "text": "{cpu.clock.ghz:0.0} GHz  ·  {cpu.power:0} W",
+      "size": 13,
+      "color": "#8A9BB8"
+    },
+    {
+      "type": "panel",
+      "x": 10,
+      "y": 225,
+      "w": 300,
+      "h": 175,
+      "color": "#18233A",
+      "borderColor": "#2A3A5C",
+      "radius": 10
+    },
+    {
+      "type": "label",
+      "x": 24,
+      "y": 237,
+      "w": 60,
+      "h": 22,
+      "text": "GPU",
+      "size": 18,
+      "bold": true,
+      "color": "#76D66F"
+    },
+    {
+      "type": "label",
+      "x": 24,
+      "y": 269,
+      "w": 80,
+      "h": 16,
+      "text": "Uso",
+      "size": 12,
+      "color": "#8A9BB8"
+    },
+    {
+      "type": "label",
+      "x": 196,
+      "y": 269,
+      "w": 100,
+      "h": 16,
+      "text": "Temperatura",
+      "size": 12,
+      "color": "#8A9BB8",
+      "align": "right"
+    },
+    {
+      "type": "text",
+      "x": 72,
+      "y": 235,
+      "w": 228,
+      "h": 24,
+      "text": "{model.gpu}",
+      "size": 13,
+      "color": "#8A9BB8"
+    },
+    {
+      "type": "text",
+      "x": 20,
+      "y": 285,
+      "w": 140,
+      "h": 50,
+      "text": "{gpu.load:0}%",
+      "size": 40,
+      "bold": true
+    },
+    {
+      "type": "text",
+      "x": 160,
+      "y": 285,
+      "w": 140,
+      "h": 50,
+      "text": "{gpu.temp:0}°C",
+      "size": 40,
+      "bold": true,
+      "align": "right",
+      "colorRules": [
+        {
+          "max": 60,
+          "color": "#76D66F"
+        },
+        {
+          "max": 80,
+          "color": "#FFC14D"
+        },
+        {
+          "color": "#FF5C5C"
+        }
+      ]
+    },
+    {
+      "type": "bar",
+      "x": 24,
+      "y": 353,
+      "w": 272,
+      "h": 16,
+      "sensor": "gpu.load",
+      "color": "#76D66F",
+      "backColor": "#26334F"
+    },
+    {
+      "type": "text",
+      "x": 20,
+      "y": 375,
+      "w": 280,
+      "h": 22,
+      "text": "VRAM {gpu.mem.used.gb:0.0}/{gpu.mem.total.gb:0} GB  ·  {gpu.power:0} W",
+      "size": 13,
+      "color": "#8A9BB8"
+    },
+    {
+      "type": "panel",
+      "x": 10,
+      "y": 408,
+      "w": 300,
+      "h": 62,
+      "color": "#18233A",
+      "borderColor": "#2A3A5C",
+      "radius": 10
+    },
+    {
+      "type": "label",
+      "x": 24,
+      "y": 420,
+      "w": 60,
+      "h": 22,
+      "text": "RAM",
+      "size": 18,
+      "bold": true,
+      "color": "#C08BFF"
+    },
+    {
+      "type": "text",
+      "x": 80,
+      "y": 416,
+      "w": 216,
+      "h": 26,
+      "size": 16,
+      "align": "right",
+      "text": "{ram.used:0.0} / {ram.total:0.0} GB  ·  {ram.load:0}%"
+    },
+    {
+      "type": "bar",
+      "x": 24,
+      "y": 448,
+      "w": 272,
+      "h": 12,
+      "sensor": "ram.load",
+      "color": "#C08BFF",
+      "backColor": "#26334F"
+    }
+  ]
+}

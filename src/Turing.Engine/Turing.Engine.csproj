@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Turing.Themes\Turing.Themes.csproj" />
+    <ProjectReference Include="..\Turing.Device\Turing.Device.csproj" />
+    <ProjectReference Include="..\Turing.Sensors\Turing.Sensors.csproj" />
+    <ProjectReference Include="..\Turing.Render\Turing.Render.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
